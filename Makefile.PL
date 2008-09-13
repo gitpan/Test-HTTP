@@ -12,5 +12,6 @@ WriteMakefile(
         Test::More            => 0,
         Text::Balanced        => 0,
         Filter::Simple        => 0,
+        Encode                => 0,
     },
 );

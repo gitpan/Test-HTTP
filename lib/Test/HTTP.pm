@@ -2,7 +2,7 @@ package Test::HTTP;
 use warnings;
 use strict;
 
-our $VERSION = 0.12;
+our $VERSION = 0.13;
 
 =head1 NAME
 
