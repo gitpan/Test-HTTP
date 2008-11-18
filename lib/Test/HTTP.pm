@@ -2,7 +2,7 @@ package Test::HTTP;
 use warnings;
 use strict;
 
-our $VERSION = 0.13;
+our $VERSION = 0.14;
 
 =head1 NAME
 
@@ -89,7 +89,7 @@ sub import {
 
 =head1 CONSTRUCTOR
 
-    Test::HTTP->new($name);
+=head2 Test::HTTP->new($name);
 
 C<$name> is a name for the test, used to help write test descriptions when you
 don't specify them.
@@ -373,13 +373,13 @@ L<prove(1)>
 
 =head1 AUTHOR
 
-Socialtext, Inc. C<< <code@socialtext.com> >>
+Matt Liggett C<< <mml@pobox.com> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2006 Socialtext, Inc., all rights reserved.
+Copyright 2006 Socialtext, Inc.
 
-SOME SUITABLE LICENSE TERMS GO HERE.
+Same terms as Perl.
 
 =cut
 
