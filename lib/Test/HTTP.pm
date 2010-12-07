@@ -2,7 +2,7 @@ package Test::HTTP;
 use warnings;
 use strict;
 
-our $VERSION = 0.14;
+our $VERSION = 0.16;
 
 =head1 NAME
 
@@ -234,7 +234,7 @@ before running it with C<< $test->run_request >>.
 sub new_request {
     my ( $self, $method, $uri, @args ) = @_;
     $self->request(
-        HTTP::Request->new( $method => encode_utf8($uri), @args ) );
+        HTTP::Request->new( $method => $uri, @args ) );
     $self->request->authorization_basic($self->username, $self->password)
         if (defined $self->username) || (defined $self->password);
     return $self->request;
@@ -310,7 +310,7 @@ sub body_is {
 
     $description ||= $self->name . " body is '$expected_body'.";
 
-    $Builder->is_eq( $self->response->decoded_content, $expected_body, $description );
+    $Builder->is_eq( $self->_decoded_content, $expected_body, $description );
 }
 
 =head2 $test->body_like($regex [, $description]);
@@ -325,7 +325,7 @@ sub body_like {
 
     $description ||= $self->name . " body matches $regex.";
 
-    $Builder->like( $self->response->decoded_content, $regex, $description );
+    $Builder->like($self->_decoded_content, $regex, $description);
 }
 
 =head1 USER AGENT GENERATION
@@ -362,6 +362,24 @@ sub _ua_class {
     return $class;
 }
 
+sub _decoded_content {
+    my $self = shift;
+    my $content = $self->response->decoded_content;
+   
+    # Work around a bug in HTTP::Message where only text or xml content types
+    # are decoded
+    my $response = $self->response;
+    my $ct = $self->response->header("Content-Type");
+    unless ($response->content_is_text or $response->content_is_xml) {
+        my ($charset) = $ct =~ m{charset=(\S+)};
+        $charset ||= "ISO-8859-1";
+        require Encode;
+        $content = Encode::decode($charset, $content);
+    }
+
+    return $content;
+}
+
 =head1 SEE ALSO
 
 L<http://www.w3.org/Protocols/rfc2616/rfc2616.html>,
@@ -373,11 +391,11 @@ L<prove(1)>
 
 =head1 AUTHOR
 
-Matt Liggett C<< <mml@pobox.com> >>
+Socialtext, Inc. C<< <code@socialtext.com> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2006 Socialtext, Inc.
+Copyright 2006 Socialtext, Inc., all rights reserved.
 
 Same terms as Perl.
 
